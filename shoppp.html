@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MAISON — Premium Lifestyle Store</title>
+<link rel="stylesheet" href="css/font.css">
 <style>
 :root {
   --cream: #f7f3ee;
@@ -26,7 +27,7 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--cream);
   color: var(--charcoal);
-  font-family: 'Helvetica', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 15px;
   line-height: 1.6;
   overflow-x: hidden;
@@ -44,7 +45,7 @@ nav {
 }
 
 .nav-logo {
-  font-family: 'Georgia', serif;
+  font-family: 'Playfair Display', serif;
   font-size: 22px; font-weight: 900;
   letter-spacing: 4px;
   color: var(--charcoal);
@@ -1041,7 +1042,7 @@ function switchAuthView(view) {
 function handleLogin() {
   const email = document.getElementById('login-email').value;
   const pass = document.getElementById('login-pass').value;
-  if(!email || !pass || !validateEmail(email)) { showToast('Please enter a valid email and password'); return; }
+  if(!email||!pass) { showToast('Please fill in all fields'); return; }
   showToast(`Welcome back! Signed in as ${email}`);
   closeModal('login-modal');
 }
@@ -1049,7 +1050,7 @@ function handleLogin() {
 function handleRegister() {
   const email = document.getElementById('reg-email').value;
   const fname = document.getElementById('reg-fname').value;
-  if(!email || !fname || !validateEmail(email)) { showToast('Please enter a valid email and first name'); return; }
+  if(!email||!fname) { showToast('Please fill in required fields'); return; }
   showToast(`Account created! Welcome, ${fname}!`);
   closeModal('login-modal');
 }
@@ -1059,21 +1060,7 @@ function openCheckout() {
   if(cart.length===0) return;
   closeAll();
   const sum = cart.reduce((s,i)=>s+(i.price*i.qty),0);
-  const summaryEl = document.getElementById('checkout-summary');
-  summaryEl.innerHTML = '';
-  cart.forEach(i => {
-    const div = document.createElement('div');
-    div.style.display = 'flex';
-    div.style.justifyContent = 'space-between';
-    const span1 = document.createElement('span');
-    span1.textContent = `${i.name} × ${i.qty}`;
-    const span2 = document.createElement('span');
-    span2.style.color = 'var(--charcoal)';
-    span2.textContent = `฿${(i.price*i.qty).toLocaleString()}`;
-    div.appendChild(span1);
-    div.appendChild(span2);
-    summaryEl.appendChild(div);
-  });
+  document.getElementById('checkout-summary').innerHTML = cart.map(i=>`<div style="display:flex;justify-content:space-between"><span>${i.name} × ${i.qty}</span><span style="color:var(--charcoal)">฿${(i.price*i.qty).toLocaleString()}</span></div>`).join('');
   document.getElementById('checkout-total').textContent = '฿'+sum.toLocaleString();
   openModal('checkout-modal');
 }
@@ -1087,7 +1074,7 @@ function handleCheckout() {
   const name = document.getElementById('co-name').value;
   const email = document.getElementById('co-email').value;
   const address = document.getElementById('co-address').value;
-  if(!name || !email || !address || !validateEmail(email)) { showToast('Please fill in all required fields with valid email'); return; }
+  if(!name||!email||!address) { showToast('Please fill in all required fields'); return; }
   const sum = cart.reduce((s,i)=>s+(i.price*i.qty),0);
   closeModal('checkout-modal');
   cart = [];
@@ -1098,20 +1085,18 @@ function handleCheckout() {
 // ── NEWSLETTER ──
 function handleNewsletter() {
   const email = document.getElementById('newsletter-email').value;
-  if(!email || !validateEmail(email)) { showToast('Please enter a valid email'); return; }
+  if(!email) return;
   showToast(`🎉 Subscribed! Welcome to MAISON`);
   document.getElementById('newsletter-email').value='';
 }
 function handlePromoSignup() {
   const email = document.getElementById('promo-email').value;
-  if(!email || !validateEmail(email)) { showToast('Please enter a valid email'); return; }
+  if(!email) return;
   showToast(`🎉 You're in! 15% discount code sent to ${email}`);
   document.getElementById('promo-email').value='';
 }
 
 // ── TOAST ──
-function validateEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
-
 function showToast(msg) {
   const t = document.getElementById('toast');
   document.getElementById('toast-msg').textContent = msg;
